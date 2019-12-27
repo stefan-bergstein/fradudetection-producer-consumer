@@ -14,8 +14,8 @@ DEFAULT_REGION = 'us-east-1'
 def fetchS3data(bucket,filename,accesskey, secretkey, s3endpoint):
     client = boto3.client('s3',
                            endpoint_url=s3endpoint,
-#                           aws_access_key_id=accesskey,
-#                           aws_secret_access_key=secretkey,
+                           aws_access_key_id=accesskey,
+                           aws_secret_access_key=secretkey,
 #                           region_name=DEFAULT_REGION,
                            verify=False)
     csv_obj = client.get_object(Bucket=bucket, Key=filename)
@@ -38,8 +38,8 @@ def sendMessage(payload,topic,producer):
 def main():
 
     s3bucket = os.environ['s3bucket']
-    accesskey = os.environ['ACCESS_KEY_ID']
-    secretkey = os.environ['SECRET_ACCESS_KEY']
+    accesskey = os.environ['ACCESS_KEY_ID'].rstrip()
+    secretkey = os.environ['SECRET_ACCESS_KEY'].rstrip()
     s3endpoint = os.environ['s3endpoint']
     filename = os.environ['filename']
     topic = os.environ['topic']
