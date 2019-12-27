@@ -14,8 +14,8 @@ DEFAULT_REGION = 'us-east-1'
 def fetchS3data(bucket,filename,accesskey, secretkey, s3endpoint):
     client = boto3.client('s3',
                            endpoint_url=s3endpoint,
-                           aws_access_key_id=accesskey,
-                           aws_secret_access_key=secretkey,
+#                           aws_access_key_id=accesskey,
+#                           aws_secret_access_key=secretkey,
 #                           region_name=DEFAULT_REGION,
                            verify=False)
     csv_obj = client.get_object(Bucket=bucket, Key=filename)
