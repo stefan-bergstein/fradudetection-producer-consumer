@@ -46,6 +46,7 @@ def main():
     bootstrap = os.environ['bootstrap']
 
     print(s3bucket,filename, s3endpoint)
+    print("-")
     print("AK:", accesskey)
     print("SK:",secretkey)
     messages = fetchS3data(s3bucket,filename,accesskey, secretkey, s3endpoint)
