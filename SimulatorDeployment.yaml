@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: app-simulator
+
+parameters:
+
+  - name: NAMESPACE
+    description: The OpenShift project in use
+    value: sbergste-odh-test1
+
+objects:
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      labels:
+        template: app-simulator
+        build: app-simulator-booth-demo
+      name: app-simulator
+      namespace: ${NAMESPACE}
+    spec:
+      lookupPolicy:
+        local: false
+
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      name: app-simulator
+      namespace: ${NAMESPACE}
+      labels:
+        template: app-simulator
+    spec:
+      output:
+        to:
+          kind: ImageStreamTag
+          name: app-simulator:latest
+      source:
+        git:
+          uri: https://github.com/stefan-bergstein/fradudetection-producer-consumer.git
+        type: Git
+      strategy:
+        sourceStrategy:
+          env:
+          - name: APP_SCRIPT
+            value: appSimulator.sh
+          - name: GIT_SSL_NO_VERIFY
+            value: 'false'
+          from:
+            kind: DockerImage
+            name: centos/python-36-centos7
+          forcePull: true
+        type: Source
+      triggers:
+        - type: ConfigChange
+
+
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      labels:
+        template: app-simulator
+        app: app-simulator
+      name: app-simulator-dc
+      namespace: ${NAMESPACE}
+    spec:
+      replicas: 1
+      strategy:
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            app: app-simulator
+        spec:
+          containers:
+          - name: app-simulator
+            env:
+            - name: seldon
+              value: "http://seldon-core-seldon-apiserver-sbergste-odh-test1.apps.ocp4.stormshift.coe.muc.redhat.com"
+            - name: ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keysecret
+                  key: accesskey
+            - name: SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: keysecret
+                  key: secretkey
+            - name: s3endpoint
+              value: "http://10.32.111.87:8000"
+            - name: s3bucket
+              value: "fraud-demo"
+            - name: filename
+              value: "creditcard-sample10k.csv"
+          restartPolicy: Always
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - app-simulator
+            from:
+              kind: ImageStreamTag
+              name: app-simulator:latest
