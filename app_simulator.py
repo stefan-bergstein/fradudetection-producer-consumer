@@ -27,7 +27,7 @@ def fetchS3data(bucket,filename,accesskey, secretkey, s3endpoint):
                            aws_access_key_id=accesskey,
                            aws_secret_access_key=secretkey,
 #                           region_name=DEFAULT_REGION,
-                           verify=False)
+                           verify=True)
     csv_obj = client.get_object(Bucket=bucket, Key=filename)
     class_one = []
     class_zero=[]
@@ -83,7 +83,7 @@ def main():
 
     print(s3bucket,filename, s3endpoint)
     print("AK:", accesskey)
-    print("SK:",secretkey)
+#    print("SK:",secretkey)
     messages = fetchS3data(s3bucket,filename,accesskey, secretkey, s3endpoint)
 
     class_zero = messages[0]
