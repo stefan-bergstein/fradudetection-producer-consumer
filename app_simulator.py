@@ -58,7 +58,7 @@ def invokeModel(msg, access_token, seldon):
     #Read the test dataframe and stream each row
 
     # Send the post request for the prediction
-    requestPrediction = requests.post(seldon+'/api/v0.1/predictions', headers=headers, json={"strData": payload })
+    requestPrediction = requests.post(seldon+'/api/v1.0/predictions', headers=headers, json={"strData": payload })
     predictionData = requestPrediction.json();
     datafield = predictionData['data']
     predictionArray = datafield['ndarray']
