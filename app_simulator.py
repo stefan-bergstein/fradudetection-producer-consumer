@@ -72,7 +72,8 @@ def main():
 
     seldon = os.environ['seldon']
 
-    access_token = getToken(seldon)
+    access_token = ""
+    #access_token = getToken(seldon)
     print(access_token)
 
     s3bucket = os.environ['s3bucket']
