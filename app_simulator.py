@@ -55,7 +55,7 @@ def invokeModel(msg, access_token, seldon):
     headers = {'Content-type': 'application/json'}
 
 
-    #Read the test dataframe and stream each row
+    #Read the test dataframe and stream each row  
 
     # Send the post request for the prediction
     requestPrediction = requests.post(seldon+'/api/v1.0/predictions', headers=headers, json={"strData": payload })
